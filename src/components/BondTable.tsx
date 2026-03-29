@@ -1,5 +1,4 @@
-import { Box, Text } from "@mantine/core";
-import { IconTable } from "@tabler/icons-react";
+import { Table2 } from "lucide-react";
 import { AgGridReact } from "ag-grid-react";
 import { useMemo, useCallback } from "react";
 import { useAppStore } from "@/store/useAppStore";
@@ -116,26 +115,15 @@ export function BondTable() {
 
   if (bonds.length === 0) {
     return (
-      <Box
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          height: 300,
-          opacity: 0.5,
-        }}
-      >
-        <IconTable size={48} stroke={1.2} />
-        <Text size="sm" mt="sm">
-          Load data to view bond universe
-        </Text>
-      </Box>
+      <div className="flex flex-col items-center justify-center h-[300px] opacity-50">
+        <Table2 className="h-12 w-12" strokeWidth={1.2} />
+        <p className="text-sm mt-3">Load data to view bond universe</p>
+      </div>
     );
   }
 
   return (
-    <Box className="ag-theme-alpine" style={{ height: 350, width: "100%" }}>
+    <div className="ag-theme-alpine h-[350px] w-full">
       <AgGridReact<TableRow>
         rowData={rowData}
         columnDefs={columnDefs}
@@ -149,6 +137,6 @@ export function BondTable() {
           resizable: true,
         }}
       />
-    </Box>
+    </div>
   );
 }

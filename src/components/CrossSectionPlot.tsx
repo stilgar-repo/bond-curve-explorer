@@ -1,13 +1,12 @@
-import { Box, Text } from "@mantine/core";
-import { IconChartDots } from "@tabler/icons-react";
+import { ScatterChart } from "lucide-react";
 import { useMemo } from "react";
 import Plot from "react-plotly.js";
 import { useAppStore } from "@/store/useAppStore";
 
 const CURVE_COLORS: Record<string, string> = {
-  base: "#001f87",   // vibrant blue
-  curve1: "#7fba50", // natural green
-  curve2: "#e86b00", // orange
+  base: "#001f87",
+  curve1: "#7fba50",
+  curve2: "#e86b00",
 };
 
 export function CrossSectionPlot() {
@@ -63,21 +62,10 @@ export function CrossSectionPlot() {
 
   if (bonds.length === 0) {
     return (
-      <Box
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          height: 350,
-          opacity: 0.5,
-        }}
-      >
-        <IconChartDots size={48} stroke={1.2} />
-        <Text size="sm" mt="sm">
-          Load data to view cross-section
-        </Text>
-      </Box>
+      <div className="flex flex-col items-center justify-center h-[350px] opacity-50">
+        <ScatterChart className="h-12 w-12" strokeWidth={1.2} />
+        <p className="text-sm mt-3">Load data to view cross-section</p>
+      </div>
     );
   }
 

@@ -2,17 +2,115 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  margin: 0;
-  padding: 0;
+@layer base {
+  :root {
+    /* Brand palette mapped to semantic tokens (HSL) */
+    --background: 30 60% 96%;        /* cream #fcf7f0 */
+    --foreground: 210 100% 13%;      /* dark_blue #002140 */
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 100% 13%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 100% 13%;
+
+    --primary: 210 100% 13%;         /* dark_blue #002140 */
+    --primary-foreground: 190 33% 93%; /* light_blue #e6f1f3 */
+
+    --secondary: 186 23% 77%;        /* stormy_blue #b5d1d4 */
+    --secondary-foreground: 210 100% 13%;
+
+    --muted: 30 50% 91%;             /* sand #f4e8d6 */
+    --muted-foreground: 210 20% 40%;
+
+    --accent: 190 33% 93%;           /* light_blue #e6f1f3 */
+    --accent-foreground: 210 100% 13%;
+
+    --destructive: 355 70% 51%;      /* dashboard red #d82c38 */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 186 23% 77%;           /* stormy_blue */
+    --input: 186 23% 77%;
+    --ring: 228 100% 26%;            /* vibrant_blue #001f87 */
+
+    --radius: 0.5rem;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 210 100% 13%;
+    --sidebar-primary: 210 100% 13%;
+    --sidebar-primary-foreground: 190 33% 93%;
+    --sidebar-accent: 190 33% 93%;
+    --sidebar-accent-foreground: 210 100% 13%;
+    --sidebar-border: 186 23% 77%;
+    --sidebar-ring: 228 100% 26%;
+
+    /* Custom brand tokens */
+    --brand-vibrant: 228 100% 26%;   /* #001f87 */
+    --brand-turquoise: 182 72% 65%;  /* #61e3e8 */
+    --brand-orange: 28 100% 45%;     /* #e86b00 */
+    --brand-green: 95 44% 52%;       /* #7fba50 */
+    --brand-highlight: 72 100% 50%;  /* #e6ff00 */
+    --brand-grey: 0 0% 85%;          /* #d9d9d9 */
+  }
+
+  .dark {
+    --background: 210 100% 13%;      /* dark_blue #002140 */
+    --foreground: 190 33% 93%;       /* light_blue #e6f1f3 */
+
+    --card: 210 100% 10%;            /* #001a33 */
+    --card-foreground: 190 33% 93%;
+
+    --popover: 210 100% 10%;
+    --popover-foreground: 190 33% 93%;
+
+    --primary: 190 33% 93%;          /* light_blue */
+    --primary-foreground: 210 100% 13%;
+
+    --secondary: 228 100% 26%;       /* vibrant_blue */
+    --secondary-foreground: 190 33% 93%;
+
+    --muted: 210 100% 10%;
+    --muted-foreground: 186 23% 77%;
+
+    --accent: 228 100% 26%;
+    --accent-foreground: 190 33% 93%;
+
+    --destructive: 355 70% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 228 100% 26%;          /* vibrant_blue */
+    --input: 228 100% 26%;
+    --ring: 182 72% 65%;             /* turquoise */
+
+    --sidebar-background: 210 100% 10%;
+    --sidebar-foreground: 190 33% 93%;
+    --sidebar-primary: 190 33% 93%;
+    --sidebar-primary-foreground: 210 100% 13%;
+    --sidebar-accent: 228 100% 26%;
+    --sidebar-accent-foreground: 190 33% 93%;
+    --sidebar-border: 228 100% 26%;
+    --sidebar-ring: 182 72% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    margin: 0;
+    padding: 0;
+  }
 }
 
 /* AG Grid dark mode override */
-[data-mantine-color-scheme="dark"] .ag-theme-alpine {
-  --ag-background-color: hsl(210 100% 12%);
-  --ag-header-background-color: hsl(210 100% 15%);
-  --ag-odd-row-background-color: hsl(210 100% 12%);
-  --ag-row-hover-color: hsla(187 78% 60% / 0.08);
-  --ag-foreground-color: hsl(195 18% 90%);
-  --ag-border-color: hsl(210 50% 20%);
+.dark .ag-theme-alpine {
+  --ag-background-color: hsl(210 100% 10%);
+  --ag-header-background-color: hsl(210 100% 13%);
+  --ag-odd-row-background-color: hsl(210 100% 10%);
+  --ag-row-hover-color: hsla(182 72% 65% / 0.08);
+  --ag-foreground-color: hsl(190 33% 93%);
+  --ag-border-color: hsl(228 100% 26%);
 }

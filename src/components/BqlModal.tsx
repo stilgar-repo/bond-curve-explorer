@@ -1,31 +1,41 @@
-import { Code, Modal, Stack, Text } from "@mantine/core";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useAppStore } from "@/store/useAppStore";
 import { buildSpreadsBql, buildUniverseBql } from "@/api/bloomberg";
 
 interface BqlModalProps {
-  opened: boolean;
-  onClose: () => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export function BqlModal({ opened, onClose }: BqlModalProps) {
+export function BqlModal({ open, onOpenChange }: BqlModalProps) {
   const settings = useAppStore((s) => s.settings);
 
   return (
-    <Modal opened={opened} onClose={onClose} title="BQL Queries" size="lg">
-      <Stack gap="lg">
-        <div>
-          <Text fw={600} mb="xs">
-            Bond Universe Query
-          </Text>
-          <Code block>{buildUniverseBql(settings)}</Code>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>BQL Queries</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-6">
+          <div>
+            <p className="font-semibold mb-2 text-sm text-foreground">Bond Universe Query</p>
+            <pre className="bg-muted p-3 rounded-md text-xs overflow-x-auto text-foreground">
+              {buildUniverseBql(settings)}
+            </pre>
+          </div>
+          <div>
+            <p className="font-semibold mb-2 text-sm text-foreground">Historical Spreads Query</p>
+            <pre className="bg-muted p-3 rounded-md text-xs overflow-x-auto text-foreground">
+              {buildSpreadsBql(settings)}
+            </pre>
+          </div>
         </div>
-        <div>
-          <Text fw={600} mb="xs">
-            Historical Spreads Query
-          </Text>
-          <Code block>{buildSpreadsBql(settings)}</Code>
-        </div>
-      </Stack>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   );
 }
