@@ -1,15 +1,22 @@
-import {
-  Accordion,
-  NumberInput,
-  Select,
-  Stack,
-  Text,
-  TextInput,
-} from "@mantine/core";
-import { IconAdjustments, IconChartLine } from "@tabler/icons-react";
+import { Settings, TrendingUp } from "lucide-react";
 import { useAppStore } from "@/store/useAppStore";
 import { LOCAL_CURRENCIES } from "@/types/bond";
 import type { CurveConfig, LocalCurrency } from "@/types/bond";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 function CurveInputs({
   label,
@@ -21,23 +28,31 @@ function CurveInputs({
   onChange: (c: CurveConfig) => void;
 }) {
   return (
-    <Stack gap="xs">
-      <Text size="sm" fw={600}>
-        {label}
-      </Text>
-      <TextInput
-        label="Tickers (comma-separated)"
-        value={value.tickers}
-        onChange={(e) => onChange({ ...value, tickers: e.currentTarget.value })}
-        placeholder="IBRD,WORLD"
-      />
-      <Select
-        label="Currency"
-        data={LOCAL_CURRENCIES}
-        value={value.currency}
-        onChange={(v) => onChange({ ...value, currency: v ?? "USD" })}
-      />
-    </Stack>
+    <div className="space-y-2">
+      <p className="text-sm font-semibold text-foreground">{label}</p>
+      <div className="space-y-1">
+        <Label className="text-xs">Tickers (comma-separated)</Label>
+        <Input
+          value={value.tickers}
+          onChange={(e) => onChange({ ...value, tickers: e.target.value })}
+          placeholder="IBRD,WORLD"
+          className="h-8 text-sm"
+        />
+      </div>
+      <div className="space-y-1">
+        <Label className="text-xs">Currency</Label>
+        <Select value={value.currency} onValueChange={(v) => onChange({ ...value, currency: v })}>
+          <SelectTrigger className="h-8 text-sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {LOCAL_CURRENCIES.map((c) => (
+              <SelectItem key={c} value={c}>{c}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
   );
 }
 
@@ -45,83 +60,112 @@ export function SettingsPanel() {
   const { settings, setSettings } = useAppStore();
 
   return (
-    <Accordion defaultValue={["universe", "spreads"]} multiple variant="separated">
-      <Accordion.Item value="universe">
-        <Accordion.Control icon={<IconAdjustments size={18} />}>
-          Bond Universe
-        </Accordion.Control>
-        <Accordion.Panel>
-          <Stack gap="md">
-            <TextInput
-              label="Field List"
+    <Accordion type="multiple" defaultValue={["universe", "spreads"]} className="space-y-2">
+      <AccordionItem value="universe" className="border rounded-md px-3">
+        <AccordionTrigger className="text-sm font-medium">
+          <span className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            Bond Universe
+          </span>
+        </AccordionTrigger>
+        <AccordionContent className="space-y-3 pb-3">
+          <div className="space-y-1">
+            <Label className="text-xs">Field List</Label>
+            <Input
               value={settings.fieldList}
-              onChange={(e) => setSettings({ fieldList: e.currentTarget.value })}
+              onChange={(e) => setSettings({ fieldList: e.target.value })}
+              className="h-8 text-sm"
             />
-            <NumberInput
-              label="Max Bonds"
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs">Max Bonds</Label>
+            <Input
+              type="number"
               value={settings.maxBonds}
-              onChange={(v) => setSettings({ maxBonds: Number(v) || 10 })}
+              onChange={(e) => setSettings({ maxBonds: Number(e.target.value) || 10 })}
               min={1}
               max={500}
+              className="h-8 text-sm"
             />
-            <TextInput
-              label="Min Amount Issued"
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs">Min Amount Issued</Label>
+            <Input
               value={settings.minAmount}
-              onChange={(e) => setSettings({ minAmount: e.currentTarget.value })}
+              onChange={(e) => setSettings({ minAmount: e.target.value })}
+              className="h-8 text-sm"
             />
-            <TextInput
-              label="Max Issue Date"
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs">Max Issue Date</Label>
+            <Input
               value={settings.maxIssueDt}
-              onChange={(e) => setSettings({ maxIssueDt: e.currentTarget.value })}
+              onChange={(e) => setSettings({ maxIssueDt: e.target.value })}
+              className="h-8 text-sm"
             />
-            <CurveInputs
-              label="Base Curve"
-              value={settings.baseCurve}
-              onChange={(baseCurve) => setSettings({ baseCurve })}
-            />
-            <CurveInputs
-              label="Curve 1"
-              value={settings.curve1}
-              onChange={(curve1) => setSettings({ curve1 })}
-            />
-            <CurveInputs
-              label="Curve 2"
-              value={settings.curve2}
-              onChange={(curve2) => setSettings({ curve2 })}
-            />
-          </Stack>
-        </Accordion.Panel>
-      </Accordion.Item>
+          </div>
+          <CurveInputs
+            label="Base Curve"
+            value={settings.baseCurve}
+            onChange={(baseCurve) => setSettings({ baseCurve })}
+          />
+          <CurveInputs
+            label="Curve 1"
+            value={settings.curve1}
+            onChange={(curve1) => setSettings({ curve1 })}
+          />
+          <CurveInputs
+            label="Curve 2"
+            value={settings.curve2}
+            onChange={(curve2) => setSettings({ curve2 })}
+          />
+        </AccordionContent>
+      </AccordionItem>
 
-      <Accordion.Item value="spreads">
-        <Accordion.Control icon={<IconChartLine size={18} />}>
-          Historical Spreads
-        </Accordion.Control>
-        <Accordion.Panel>
-          <Stack gap="md">
-            <TextInput
-              label="Lookback Window"
+      <AccordionItem value="spreads" className="border rounded-md px-3">
+        <AccordionTrigger className="text-sm font-medium">
+          <span className="flex items-center gap-2">
+            <TrendingUp className="h-4 w-4" />
+            Historical Spreads
+          </span>
+        </AccordionTrigger>
+        <AccordionContent className="space-y-3 pb-3">
+          <div className="space-y-1">
+            <Label className="text-xs">Lookback Window</Label>
+            <Input
               value={settings.lookbackWindow}
-              onChange={(e) => setSettings({ lookbackWindow: e.currentTarget.value })}
+              onChange={(e) => setSettings({ lookbackWindow: e.target.value })}
               placeholder="1M"
+              className="h-8 text-sm"
             />
-            <TextInput
-              label="Spread Type"
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs">Spread Type</Label>
+            <Input
               value={settings.spreadType}
-              onChange={(e) => setSettings({ spreadType: e.currentTarget.value })}
+              onChange={(e) => setSettings({ spreadType: e.target.value })}
               placeholder="ASW"
+              className="h-8 text-sm"
             />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs">Local Currency</Label>
             <Select
-              label="Local Currency"
-              data={LOCAL_CURRENCIES}
               value={settings.localCurrency}
-              onChange={(v) =>
-                setSettings({ localCurrency: (v as LocalCurrency) ?? "USD" })
-              }
-            />
-          </Stack>
-        </Accordion.Panel>
-      </Accordion.Item>
+              onValueChange={(v) => setSettings({ localCurrency: v as LocalCurrency })}
+            >
+              <SelectTrigger className="h-8 text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {LOCAL_CURRENCIES.map((c) => (
+                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </AccordionContent>
+      </AccordionItem>
     </Accordion>
   );
 }
