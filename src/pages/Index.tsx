@@ -48,7 +48,6 @@ export default function Index() {
     setBloombergConnected,
   } = useAppStore();
 
-  // Health check on mount
   useEffect(() => {
     checkHealth()
       .then((res) => setBloombergConnected(res.bloomberg_connected))
@@ -72,6 +71,8 @@ export default function Index() {
     }
   }, [settings, setLoading, setError, setBonds, setSpreads]);
 
+  const isDark = colorScheme === "dark";
+
   return (
     <>
       <BqlModal opened={bqlOpened} onClose={closeBql} />
@@ -80,12 +81,25 @@ export default function Index() {
         navbar={{ width: 320, breakpoint: "sm" }}
         padding="md"
         header={{ height: 56 }}
+        styles={{
+          main: {
+            backgroundColor: isDark ? "#002140" : "#fcf7f0",
+          },
+          header: {
+            backgroundColor: isDark ? "#001a33" : "#e6f1f3",
+            borderBottom: `1px solid ${isDark ? "#001f87" : "#b5d1d4"}`,
+          },
+          navbar: {
+            backgroundColor: isDark ? "#001a33" : "#ffffff",
+            borderRight: `1px solid ${isDark ? "#001f87" : "#b5d1d4"}`,
+          },
+        }}
       >
         {/* Header */}
         <AppShell.Header>
           <Group h="100%" px="md" justify="space-between">
             <Group gap="sm">
-              <Title order={4} fw={700}>
+              <Title order={4} fw={700} c={isDark ? "#e6f1f3" : "#002140"}>
                 Bond Spread Analyzer
               </Title>
               {bloombergConnected === false && (
@@ -108,6 +122,7 @@ export default function Index() {
                 onClick={handleLoad}
                 loading={loading}
                 size="sm"
+                color="brand.5"
               >
                 Load
               </Button>
@@ -116,6 +131,7 @@ export default function Index() {
                 leftSection={<IconCode size={16} />}
                 onClick={openBql}
                 size="sm"
+                color="brand.4"
               >
                 BQL
               </Button>
@@ -124,11 +140,15 @@ export default function Index() {
                 size="lg"
                 onClick={() => toggleColorScheme()}
                 aria-label="Toggle color scheme"
+                style={{
+                  backgroundColor: isDark ? "#002140" : "#e6f1f3",
+                  borderColor: isDark ? "#001f87" : "#b5d1d4",
+                }}
               >
-                {colorScheme === "dark" ? (
-                  <IconSun size={18} />
+                {isDark ? (
+                  <IconSun size={18} color="#e6ff00" />
                 ) : (
-                  <IconMoonStars size={18} />
+                  <IconMoonStars size={18} color="#002140" />
                 )}
               </ActionIcon>
             </Group>
@@ -145,7 +165,7 @@ export default function Index() {
         {/* Main Content */}
         <AppShell.Main>
           {error && (
-            <Alert color="red" mb="md" icon={<IconAlertTriangle size={18} />}>
+            <Alert color="dashboard" mb="md" icon={<IconAlertTriangle size={18} />}>
               {error}
             </Alert>
           )}
@@ -159,34 +179,67 @@ export default function Index() {
                 padding: 40,
               }}
             >
-              <Loader size="lg" />
+              <Loader size="lg" color="brand.2" />
             </Box>
           )}
 
           <Grid gutter="md">
-            {/* Cross Section */}
             <Grid.Col span={12}>
-              <Paper shadow="xs" p="md" radius="md" withBorder>
+              <Paper
+                shadow="xs"
+                p="md"
+                radius="md"
+                withBorder
+                style={{
+                  borderColor: isDark ? "#001f87" : "#b5d1d4",
+                  backgroundColor: isDark ? "#001a33" : "#ffffff",
+                }}
+              >
                 <CrossSectionPlot />
               </Paper>
             </Grid.Col>
 
-            {/* Historical Charts */}
             <Grid.Col span={{ base: 12, md: 6 }}>
-              <Paper shadow="xs" p="md" radius="md" withBorder>
+              <Paper
+                shadow="xs"
+                p="md"
+                radius="md"
+                withBorder
+                style={{
+                  borderColor: isDark ? "#001f87" : "#b5d1d4",
+                  backgroundColor: isDark ? "#001a33" : "#ffffff",
+                }}
+              >
                 <HistoricalChart1 />
               </Paper>
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 6 }}>
-              <Paper shadow="xs" p="md" radius="md" withBorder>
+              <Paper
+                shadow="xs"
+                p="md"
+                radius="md"
+                withBorder
+                style={{
+                  borderColor: isDark ? "#001f87" : "#b5d1d4",
+                  backgroundColor: isDark ? "#001a33" : "#ffffff",
+                }}
+              >
                 <HistoricalChart2 />
               </Paper>
             </Grid.Col>
 
-            {/* Bond Table */}
             <Grid.Col span={12}>
-              <Paper shadow="xs" p="md" radius="md" withBorder>
-                <Text fw={600} mb="xs">
+              <Paper
+                shadow="xs"
+                p="md"
+                radius="md"
+                withBorder
+                style={{
+                  borderColor: isDark ? "#001f87" : "#b5d1d4",
+                  backgroundColor: isDark ? "#001a33" : "#ffffff",
+                }}
+              >
+                <Text fw={600} mb="xs" c={isDark ? "#e6f1f3" : "#002140"}>
                   Bond Universe
                 </Text>
                 <BondTable />
