@@ -85,9 +85,9 @@ export function CrossSectionPlot() {
     <Plot
       data={traces}
       layout={{
-        title: `Cross-Section (${latestDate ?? ""})`,
-        xaxis: { title: "Years to Maturity" },
-        yaxis: { title: "Spread (bps)" },
+        title: { text: `Cross-Section (${latestDate ?? ""})` },
+        xaxis: { title: { text: "Years to Maturity" } },
+        yaxis: { title: { text: "Spread (bps)" } },
         margin: { t: 40, r: 20, b: 50, l: 60 },
         hovermode: "closest",
         paper_bgcolor: "transparent",

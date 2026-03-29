@@ -86,9 +86,9 @@ export function HistoricalChart1() {
       <Plot
         data={traces}
         layout={{
-          title: "Interpolated Spreads",
-          xaxis: { title: "Date" },
-          yaxis: { title: "Spread (bps)" },
+          title: { text: "Interpolated Spreads" },
+          xaxis: { title: { text: "Date" } },
+          yaxis: { title: { text: "Spread (bps)" } },
           margin: { t: 40, r: 20, b: 50, l: 60 },
           paper_bgcolor: "transparent",
           plot_bgcolor: "transparent",

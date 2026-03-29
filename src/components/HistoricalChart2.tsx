@@ -75,9 +75,9 @@ export function HistoricalChart2() {
       <Plot
         data={trace}
         layout={{
-          title: "Spread Difference (Curve 1 − Curve 2)",
-          xaxis: { title: "Date" },
-          yaxis: { title: "Δ Spread (bps)" },
+          title: { text: "Spread Difference (Curve 1 − Curve 2)" },
+          xaxis: { title: { text: "Date" } },
+          yaxis: { title: { text: "Δ Spread (bps)" } },
           margin: { t: 40, r: 20, b: 50, l: 60 },
           paper_bgcolor: "transparent",
           plot_bgcolor: "transparent",
