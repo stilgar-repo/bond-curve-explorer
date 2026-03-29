@@ -5,9 +5,9 @@ import Plot from "react-plotly.js";
 import { useAppStore } from "@/store/useAppStore";
 
 const CURVE_COLORS: Record<string, string> = {
-  base: "#228be6",
-  curve1: "#40c057",
-  curve2: "#fa5252",
+  base: "#001f87",   // vibrant blue
+  curve1: "#7fba50", // natural green
+  curve2: "#e86b00", // orange
 };
 
 export function CrossSectionPlot() {
