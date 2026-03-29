@@ -35,8 +35,8 @@ export function HistoricalChart2() {
         type: "scatter" as const,
         mode: "lines" as const,
         fill: "tozeroy" as const,
-        line: { color: "#7950f2" },
-        fillcolor: "rgba(121,80,242,0.1)",
+        line: { color: "#61e3e8" },
+        fillcolor: "rgba(97,227,232,0.1)",
       },
     ];
   }, [filtered]);

@@ -8,9 +8,11 @@ body {
 }
 
 /* AG Grid dark mode override */
-.dark .ag-theme-alpine {
-  --ag-background-color: #1a1b1e;
-  --ag-header-background-color: #25262b;
-  --ag-odd-row-background-color: #1a1b1e;
-  --ag-row-hover-color: rgba(34, 139, 230, 0.08);
+[data-mantine-color-scheme="dark"] .ag-theme-alpine {
+  --ag-background-color: hsl(210 100% 12%);
+  --ag-header-background-color: hsl(210 100% 15%);
+  --ag-odd-row-background-color: hsl(210 100% 12%);
+  --ag-row-hover-color: hsla(187 78% 60% / 0.08);
+  --ag-foreground-color: hsl(195 18% 90%);
+  --ag-border-color: hsl(210 50% 20%);
 }

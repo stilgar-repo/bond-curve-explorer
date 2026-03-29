@@ -31,7 +31,7 @@ export function HistoricalChart1() {
         name: "Base Curve",
         type: "scatter" as const,
         mode: "lines" as const,
-        line: { color: "#228be6" },
+        line: { color: "#001f87" },
       },
       {
         x: dates,
@@ -39,7 +39,7 @@ export function HistoricalChart1() {
         name: "Curve 1",
         type: "scatter" as const,
         mode: "lines" as const,
-        line: { color: "#40c057" },
+        line: { color: "#7fba50" },
       },
       {
         x: dates,
@@ -47,7 +47,7 @@ export function HistoricalChart1() {
         name: "Curve 2",
         type: "scatter" as const,
         mode: "lines" as const,
-        line: { color: "#fa5252" },
+        line: { color: "#e86b00" },
       },
     ];
   }, [filtered]);
