@@ -1,4 +1,3 @@
-import { Table2 } from "lucide-react";
 import { AgGridReact } from "ag-grid-react";
 import { useMemo, useCallback } from "react";
 import { useAppStore } from "@/store/useAppStore";
@@ -26,10 +25,7 @@ export function BondTable() {
 
   const latestDate = useMemo(() => {
     if (spreads.length === 0) return null;
-    return spreads.reduce(
-      (max, s) => (s.curveDate > max ? s.curveDate : max),
-      spreads[0].curveDate
-    );
+    return spreads.reduce((max, s) => (s.curveDate > max ? s.curveDate : max), spreads[0].curveDate);
   }, [spreads]);
 
   const rowData = useMemo<TableRow[]>(() => {
@@ -41,60 +37,23 @@ export function BondTable() {
     }
     return bonds.map((b) => {
       const ls = latestMap.get(b.id);
-      return {
-        ...b,
-        spread: ls?.spread,
-        interpBase: ls?.interpBase,
-        interpCurve1: ls?.interpCurve1,
-        interpCurve2: ls?.interpCurve2,
-        yearsToMaturity: ls?.yearsToMaturity,
-      };
+      return { ...b, spread: ls?.spread, interpBase: ls?.interpBase, interpCurve1: ls?.interpCurve1, interpCurve2: ls?.interpCurve2, yearsToMaturity: ls?.yearsToMaturity };
     });
   }, [bonds, spreads, latestDate]);
 
   const columnDefs = useMemo<ColDef<TableRow>[]>(
     () => [
-      { field: "ticker", headerName: "Ticker", flex: 1, minWidth: 100 },
-      { field: "coupon", headerName: "Coupon", width: 90, valueFormatter: (p) => p.value?.toFixed(3) ?? "" },
+      { field: "ticker", headerName: "Ticker", flex: 1, minWidth: 90, pinned: "left" },
+      { field: "coupon", headerName: "Coupon", width: 85, valueFormatter: (p) => p.value != null ? p.value.toFixed(3) + "%" : "", cellClass: "tabular-nums text-right" },
       { field: "maturity", headerName: "Maturity", width: 110 },
-      { field: "currency", headerName: "CCY", width: 70 },
-      { field: "curve", headerName: "Curve", width: 80 },
-      {
-        field: "amountIssued",
-        headerName: "Amt Issued",
-        width: 130,
-        valueFormatter: (p) => (p.value ? (p.value / 1e6).toFixed(0) + "M" : ""),
-      },
-      {
-        field: "yearsToMaturity",
-        headerName: "YTM",
-        width: 80,
-        valueFormatter: (p) => p.value?.toFixed(1) ?? "",
-      },
-      {
-        field: "spread",
-        headerName: "Spread",
-        width: 90,
-        valueFormatter: (p) => p.value?.toFixed(0) ?? "",
-      },
-      {
-        field: "interpBase",
-        headerName: "Base",
-        width: 80,
-        valueFormatter: (p) => p.value?.toFixed(0) ?? "",
-      },
-      {
-        field: "interpCurve1",
-        headerName: "Crv1",
-        width: 80,
-        valueFormatter: (p) => p.value?.toFixed(0) ?? "",
-      },
-      {
-        field: "interpCurve2",
-        headerName: "Crv2",
-        width: 80,
-        valueFormatter: (p) => p.value?.toFixed(0) ?? "",
-      },
+      { field: "currency", headerName: "CCY", width: 60 },
+      { field: "curve", headerName: "Curve", width: 75 },
+      { field: "amountIssued", headerName: "Amt Issued", width: 110, valueFormatter: (p) => p.value ? (p.value / 1e6).toFixed(0) + "M" : "", cellClass: "tabular-nums text-right" },
+      { field: "yearsToMaturity", headerName: "YTM", width: 70, valueFormatter: (p) => p.value?.toFixed(1) ?? "", cellClass: "tabular-nums text-right" },
+      { field: "spread", headerName: "Spread", width: 80, valueFormatter: (p) => p.value != null ? p.value.toFixed(0) + " bps" : "", cellClass: "tabular-nums text-right" },
+      { field: "interpBase", headerName: "Base", width: 70, valueFormatter: (p) => p.value?.toFixed(0) ?? "", cellClass: "tabular-nums text-right" },
+      { field: "interpCurve1", headerName: "Crv1", width: 70, valueFormatter: (p) => p.value?.toFixed(0) ?? "", cellClass: "tabular-nums text-right" },
+      { field: "interpCurve2", headerName: "Crv2", width: 70, valueFormatter: (p) => p.value?.toFixed(0) ?? "", cellClass: "tabular-nums text-right" },
     ],
     []
   );
@@ -109,7 +68,10 @@ export function BondTable() {
   const getRowStyle = useCallback(
     (params: { data?: TableRow }) => {
       if (params.data?.id === selectedBondId) {
-        return { background: "rgba(34,139,230,0.12)" };
+        return {
+          borderLeft: "3px solid hsl(66 100% 50%)",
+          background: "hsla(66 100% 50% / 0.06)",
+        };
       }
       return undefined;
     },
@@ -118,9 +80,8 @@ export function BondTable() {
 
   if (bonds.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-[300px] opacity-50">
-        <Table2 className="h-12 w-12" strokeWidth={1.2} />
-        <p className="text-sm mt-3">Load data to view bond universe</p>
+      <div className="flex items-center justify-center h-[300px] text-muted-foreground">
+        <p className="text-caption">Load data to view bond universe</p>
       </div>
     );
   }
