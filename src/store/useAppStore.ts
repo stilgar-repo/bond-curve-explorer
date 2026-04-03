@@ -17,6 +17,10 @@ interface AppState {
   selectedBondId: string | null;
   setSelectedBondId: (id: string | null) => void;
 
+  /** Currently hovered bond — cross-widget highlight */
+  hoveredBondId: string | null;
+  setHoveredBondId: (id: string | null) => void;
+
   /** Loading / error state */
   loading: boolean;
   setLoading: (l: boolean) => void;
@@ -39,6 +43,9 @@ export const useAppStore = create<AppState>((set) => ({
 
   selectedBondId: null,
   setSelectedBondId: (selectedBondId) => set({ selectedBondId }),
+
+  hoveredBondId: null,
+  setHoveredBondId: (hoveredBondId) => set({ hoveredBondId }),
 
   loading: false,
   setLoading: (loading) => set({ loading }),

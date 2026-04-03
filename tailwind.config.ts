@@ -3,16 +3,26 @@ import type { Config } from "tailwindcss";
 export default {
   darkMode: ["class"],
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
-  prefix: "",
   theme: {
-    container: {
-      center: true,
-      padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
-    },
     extend: {
+      fontFamily: {
+        sans: ["Inter", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "Courier New", "monospace"],
+      },
+      fontSize: {
+        h1: ["28px", { lineHeight: "1.2", fontWeight: "700" }],
+        h2: ["22px", { lineHeight: "1.3", fontWeight: "600" }],
+        h3: ["18px", { lineHeight: "1.3", fontWeight: "600" }],
+        body: ["15px", { lineHeight: "1.5", fontWeight: "400" }],
+        caption: ["12px", { lineHeight: "1.4", fontWeight: "400" }],
+        mono: ["13px", { lineHeight: "1.4", fontWeight: "400" }],
+      },
+      borderRadius: {
+        DEFAULT: "2px",
+        sm: "2px",
+        md: "4px",
+        lg: "4px",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -30,6 +40,14 @@ export default {
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -57,19 +75,15 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        brand: {
-          vibrant: "hsl(var(--brand-vibrant))",
-          turquoise: "hsl(var(--brand-turquoise))",
-          orange: "hsl(var(--brand-orange))",
-          green: "hsl(var(--brand-green))",
-          highlight: "hsl(var(--brand-highlight))",
-          grey: "hsl(var(--brand-grey))",
+        chart: {
+          vibrant: "hsl(var(--chart-vibrant))",
+          turquoise: "hsl(var(--chart-turquoise))",
+          orange: "hsl(var(--chart-orange))",
+          green: "hsl(var(--chart-green))",
+          darkgreen: "hsl(var(--chart-darkgreen))",
+          stormy: "hsl(var(--chart-stormy))",
+          sand: "hsl(var(--chart-sand))",
         },
-      },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
         "accordion-down": {
@@ -87,5 +101,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 } satisfies Config;
