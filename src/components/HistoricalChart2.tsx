@@ -2,6 +2,7 @@ import { AreaChart } from "lucide-react";
 import { useMemo } from "react";
 import Plot from "react-plotly.js";
 import { useAppStore } from "@/store/useAppStore";
+import { usePlotlyTheme } from "@/hooks/usePlotlyTheme";
 import {
   Select,
   SelectContent,
@@ -15,6 +16,7 @@ export function HistoricalChart2() {
   const spreads = useAppStore((s) => s.spreads);
   const selectedBondId = useAppStore((s) => s.selectedBondId);
   const setSelectedBondId = useAppStore((s) => s.setSelectedBondId);
+  const plotTheme = usePlotlyTheme();
 
   const bondOptions = useMemo(
     () => bonds.map((b) => ({ value: b.id, label: `${b.ticker} ${b.maturity}` })),
@@ -40,17 +42,17 @@ export function HistoricalChart2() {
         type: "scatter" as const,
         mode: "lines" as const,
         fill: "tozeroy" as const,
-        line: { color: "#61e3e8" },
-        fillcolor: "rgba(97,227,232,0.1)",
+        line: { color: "#61e3e8", width: 1.5 },
+        fillcolor: "rgba(97,227,232,0.08)",
       },
     ];
   }, [filtered]);
 
   if (bonds.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-[300px] opacity-50">
-        <AreaChart className="h-12 w-12" strokeWidth={1.2} />
-        <p className="text-sm mt-3">Load data to view spread differences</p>
+      <div className="flex flex-col items-center justify-center h-[280px] text-muted-foreground">
+        <AreaChart className="h-10 w-10" strokeWidth={1} />
+        <p className="text-xs mt-2">Load data to view spread differences</p>
       </div>
     );
   }
@@ -58,28 +60,24 @@ export function HistoricalChart2() {
   return (
     <div>
       <Select value={selectedBondId ?? ""} onValueChange={(v) => setSelectedBondId(v || null)}>
-        <SelectTrigger className="w-[250px] h-8 text-sm mb-2">
+        <SelectTrigger className="w-[220px] h-7 text-[11px] mb-2">
           <SelectValue placeholder="Select a bond" />
         </SelectTrigger>
         <SelectContent>
           {bondOptions.map((o) => (
-            <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+            <SelectItem key={o.value} value={o.value} className="text-xs">{o.label}</SelectItem>
           ))}
         </SelectContent>
       </Select>
       <Plot
         data={trace}
         layout={{
-          title: { text: "Spread Difference (Curve 1 − Curve 2)" },
-          xaxis: { title: { text: "Date" } },
-          yaxis: { title: { text: "Δ Spread (bps)" } },
-          margin: { t: 40, r: 20, b: 50, l: 60 },
-          paper_bgcolor: "transparent",
-          plot_bgcolor: "transparent",
-          font: { family: "inherit" },
+          ...plotTheme,
+          xaxis: { ...plotTheme.xaxis, title: { text: "Date", font: { size: 10 } } },
+          yaxis: { ...plotTheme.yaxis, title: { text: "Δ Spread (bps)", font: { size: 10 } } },
         }}
         config={{ responsive: true, displayModeBar: false }}
-        style={{ width: "100%", height: 300 }}
+        style={{ width: "100%", height: 280 }}
       />
     </div>
   );

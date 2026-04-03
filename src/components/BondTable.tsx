@@ -3,9 +3,12 @@ import { AgGridReact } from "ag-grid-react";
 import { useMemo, useCallback } from "react";
 import { useAppStore } from "@/store/useAppStore";
 import type { Bond, HistoricalSpread } from "@/types/bond";
+import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import type { ColDef, RowClickedEvent } from "ag-grid-community";
+
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 interface TableRow extends Bond {
   spread?: number;

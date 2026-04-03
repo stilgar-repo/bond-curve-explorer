@@ -2,6 +2,7 @@ import { ScatterChart } from "lucide-react";
 import { useMemo } from "react";
 import Plot from "react-plotly.js";
 import { useAppStore } from "@/store/useAppStore";
+import { usePlotlyTheme } from "@/hooks/usePlotlyTheme";
 
 const CURVE_COLORS: Record<string, string> = {
   base: "#001f87",
@@ -14,6 +15,7 @@ export function CrossSectionPlot() {
   const spreads = useAppStore((s) => s.spreads);
   const selectedBondId = useAppStore((s) => s.selectedBondId);
   const setSelectedBondId = useAppStore((s) => s.setSelectedBondId);
+  const plotTheme = usePlotlyTheme();
 
   const latestDate = useMemo(() => {
     if (spreads.length === 0) return null;
@@ -49,10 +51,10 @@ export function CrossSectionPlot() {
         name: curve === "base" ? "Base Curve" : curve === "curve1" ? "Curve 1" : "Curve 2",
         marker: {
           color: CURVE_COLORS[curve] ?? "#888",
-          size: pts.map((p) => (p.bondId === selectedBondId ? 14 : 9)),
+          size: pts.map((p) => (p.bondId === selectedBondId ? 14 : 8)),
           line: {
-            width: pts.map((p) => (p.bondId === selectedBondId ? 2 : 0)),
-            color: "#000",
+            width: pts.map((p) => (p.bondId === selectedBondId ? 2 : 0.5)),
+            color: pts.map((p) => (p.bondId === selectedBondId ? "#e6ff00" : "rgba(255,255,255,0.5)")),
           },
         },
         hovertemplate: "%{text}<br>YTM: %{x:.1f}y<br>Spread: %{y:.0f}bps<extra></extra>",
@@ -62,9 +64,9 @@ export function CrossSectionPlot() {
 
   if (bonds.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-[350px] opacity-50">
-        <ScatterChart className="h-12 w-12" strokeWidth={1.2} />
-        <p className="text-sm mt-3">Load data to view cross-section</p>
+      <div className="flex flex-col items-center justify-center h-[320px] text-muted-foreground">
+        <ScatterChart className="h-10 w-10" strokeWidth={1} />
+        <p className="text-xs mt-2">Load data to view cross-section</p>
       </div>
     );
   }
@@ -73,18 +75,14 @@ export function CrossSectionPlot() {
     <Plot
       data={traces}
       layout={{
-        title: { text: `Cross-Section (${latestDate ?? ""})` },
-        xaxis: { title: { text: "Years to Maturity" } },
-        yaxis: { title: { text: "Spread (bps)" } },
-        margin: { t: 40, r: 20, b: 50, l: 60 },
+        ...plotTheme,
+        title: { text: `Cross-Section (${latestDate ?? ""})`, font: { size: 12, ...plotTheme.font } },
+        xaxis: { ...plotTheme.xaxis, title: { text: "Years to Maturity", font: { size: 10 } } },
+        yaxis: { ...plotTheme.yaxis, title: { text: "Spread (bps)", font: { size: 10 } } },
         hovermode: "closest",
-        paper_bgcolor: "transparent",
-        plot_bgcolor: "transparent",
-        font: { family: "inherit" },
-        legend: { orientation: "h", y: -0.2 },
       }}
       config={{ responsive: true, displayModeBar: false }}
-      style={{ width: "100%", height: 350 }}
+      style={{ width: "100%", height: 320 }}
       onClick={(e) => {
         const pt = e.points[0];
         if (pt?.customdata) {
