@@ -1,86 +1,111 @@
-import {
-  Download,
-  Code,
-  Sun,
-  Moon,
-  AlertTriangle,
-  Loader2,
-  Database,
-} from "lucide-react";
+import { useCallback } from "react";
+import { Sun, Moon, Database, PlayCircle, Loader2 } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAppStore } from "@/store/useAppStore";
+import { loadBondUniverse, loadHistoricalSpreads } from "@/api/bloomberg";
+import { MOCK_BONDS, MOCK_SPREADS } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
 
-interface AppHeaderProps {
-  onLoad: () => void;
-  onBqlOpen: () => void;
-  onLoadDemo: () => void;
-}
+export function AppHeader() {
+  const { theme, toggleTheme } = useTheme();
+  const { settings, loading, setLoading, setError, setBonds, setSpreads } =
+    useAppStore();
 
-export function AppHeader({ onLoad, onBqlOpen, onLoadDemo }: AppHeaderProps) {
-  const { theme, setTheme } = useTheme();
-  const loading = useAppStore((s) => s.loading);
-  const bloombergConnected = useAppStore((s) => s.bloombergConnected);
-  const isDark = theme === "dark";
+  const handleLoad = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const [univRes, spreadRes] = await Promise.all([
+        loadBondUniverse(settings),
+        loadHistoricalSpreads(settings),
+      ]);
+      setBonds(univRes.bonds);
+      setSpreads(spreadRes.spreads);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load data");
+    } finally {
+      setLoading(false);
+    }
+  }, [settings, setLoading, setError, setBonds, setSpreads]);
+
+  const handleLoadDemo = useCallback(() => {
+    setBonds(MOCK_BONDS);
+    setSpreads(MOCK_SPREADS);
+    setError(null);
+  }, [setBonds, setSpreads, setError]);
 
   return (
-    <header className="h-11 flex items-center justify-between border-b border-border bg-card px-4 shrink-0">
-      <div className="flex items-center gap-3">
-        <h1 className="text-sm font-bold text-foreground tracking-tight uppercase">
-          Bond Spread Analyzer
+    <TooltipProvider delayDuration={200}>
+      <header className="h-[48px] flex items-center justify-between px-4 bg-primary text-primary-foreground border-b border-border">
+        <h1 className="text-body font-semibold tracking-tight">
+          Fixed Income Dashboard
         </h1>
-        {bloombergConnected === false && (
-          <span className="inline-flex items-center gap-1.5 text-[11px] text-destructive font-medium">
-            <AlertTriangle className="h-3 w-3" />
-            Bloomberg offline
-          </span>
-        )}
-      </div>
 
-      <div className="flex items-center gap-1.5">
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={onLoadDemo}
-          className="h-7 text-[11px] px-2.5"
-        >
-          <Database className="h-3 w-3 mr-1" />
-          Demo
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={onLoad}
-          disabled={loading}
-          className="h-7 text-[11px] px-2.5"
-        >
-          {loading ? (
-            <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-          ) : (
-            <Download className="h-3 w-3 mr-1" />
-          )}
-          Load
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={onBqlOpen}
-          className="h-7 text-[11px] px-2.5"
-        >
-          <Code className="h-3 w-3 mr-1" />
-          BQL
-        </Button>
-        <div className="w-px h-5 bg-border mx-1" />
-        <Button
-          size="icon"
-          variant="ghost"
-          className="h-7 w-7"
-          onClick={() => setTheme(isDark ? "light" : "dark")}
-          aria-label="Toggle color scheme"
-        >
-          {isDark ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
-        </Button>
-      </div>
-    </header>
+        <div className="flex items-center gap-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLoadDemo}
+                className="h-[36px] text-caption text-primary-foreground hover:bg-secondary hover:text-secondary-foreground"
+              >
+                <PlayCircle className="h-4 w-4 mr-1" />
+                Demo
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Load sample bond data for testing</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLoad}
+                disabled={loading}
+                className="h-[36px] text-caption text-primary-foreground hover:bg-secondary hover:text-secondary-foreground"
+              >
+                {loading ? (
+                  <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                ) : (
+                  <Database className="h-4 w-4 mr-1" />
+                )}
+                Load
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Fetch bond universe and spreads from Bloomberg
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleTheme}
+                className="h-[36px] w-[36px] p-0 text-primary-foreground hover:bg-secondary hover:text-secondary-foreground"
+              >
+                {theme === "light" ? (
+                  <Moon className="h-4 w-4" />
+                ) : (
+                  <Sun className="h-4 w-4" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Switch to {theme === "light" ? "dark" : "light"} mode
+            </TooltipContent>
+          </Tooltip>
+        </div>
+      </header>
+    </TooltipProvider>
   );
 }
