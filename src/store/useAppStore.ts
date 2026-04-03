@@ -2,34 +2,38 @@ import { create } from "zustand";
 import type { Bond, BqlSettings, HistoricalSpread } from "@/types/bond";
 import { DEFAULT_BQL_SETTINGS } from "@/config/defaults";
 
+export type FontScale = "compact" | "default" | "large";
+
 interface AppState {
-  /** BQL configuration */
   settings: BqlSettings;
   setSettings: (s: Partial<BqlSettings>) => void;
 
-  /** Loaded data */
   bonds: Bond[];
   setBonds: (b: Bond[]) => void;
   spreads: HistoricalSpread[];
   setSpreads: (s: HistoricalSpread[]) => void;
 
-  /** Currently selected bond — syncs all widgets */
   selectedBondId: string | null;
   setSelectedBondId: (id: string | null) => void;
 
-  /** Currently hovered bond — cross-widget highlight */
   hoveredBondId: string | null;
   setHoveredBondId: (id: string | null) => void;
 
-  /** Loading / error state */
   loading: boolean;
   setLoading: (l: boolean) => void;
   error: string | null;
   setError: (e: string | null) => void;
 
-  /** Bloomberg connectivity */
   bloombergConnected: boolean | null;
   setBloombergConnected: (c: boolean | null) => void;
+
+  /** Font scaling: compact (14px), default (16px), large (18px) */
+  fontScale: FontScale;
+  setFontScale: (s: FontScale) => void;
+
+  /** High contrast mode */
+  highContrast: boolean;
+  setHighContrast: (hc: boolean) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -54,4 +58,16 @@ export const useAppStore = create<AppState>((set) => ({
 
   bloombergConnected: null,
   setBloombergConnected: (bloombergConnected) => set({ bloombergConnected }),
+
+  fontScale: (localStorage.getItem("bond-font-scale") as FontScale) || "default",
+  setFontScale: (fontScale) => {
+    localStorage.setItem("bond-font-scale", fontScale);
+    set({ fontScale });
+  },
+
+  highContrast: localStorage.getItem("bond-high-contrast") === "true",
+  setHighContrast: (highContrast) => {
+    localStorage.setItem("bond-high-contrast", String(highContrast));
+    set({ highContrast });
+  },
 }));

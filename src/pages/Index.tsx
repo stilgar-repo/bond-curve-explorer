@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { AlertTriangle, Loader2 } from "lucide-react";
 import { CrossSectionPlot } from "@/components/CrossSectionPlot";
 import { HistoricalChart1 } from "@/components/HistoricalChart1";
@@ -10,7 +10,20 @@ import { useAppStore } from "@/store/useAppStore";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function Index() {
-  const { bonds, selectedBondId, loading, error } = useAppStore();
+  const { bonds, selectedBondId, loading, error, fontScale, highContrast } = useAppStore();
+
+  // Apply font scale and high contrast to <html>
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.remove("font-compact", "font-default", "font-large");
+    root.classList.add(`font-${fontScale}`);
+
+    if (highContrast) {
+      root.classList.add("high-contrast");
+    } else {
+      root.classList.remove("high-contrast");
+    }
+  }, [fontScale, highContrast]);
 
   const selectedBond = useMemo(() => {
     if (!selectedBondId) return null;
@@ -19,22 +32,28 @@ export default function Index() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      {/* Skip navigation link — first focusable element */}
+      <a href="#main-content" className="skip-nav">
+        Skip to main content
+      </a>
+
       <AppHeader />
 
-      <main className="flex-1 overflow-auto p-4">
+      <main id="main-content" className="flex-1 overflow-auto p-4" role="main">
         <div className="max-w-[1400px] mx-auto space-y-4">
           {/* Error banner */}
           {error && (
-            <Alert variant="destructive">
-              <AlertTriangle className="h-4 w-4" />
+            <Alert variant="destructive" role="alert">
+              <AlertTriangle className="h-4 w-4" aria-hidden="true" />
               <AlertDescription className="text-body">{error}</AlertDescription>
             </Alert>
           )}
 
           {/* Loading spinner */}
           {loading && (
-            <div className="flex items-center justify-center py-6">
-              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            <div className="flex items-center justify-center py-6" role="status" aria-label="Loading data">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" aria-hidden="true" />
+              <span className="sr-only">Loading bond data…</span>
             </div>
           )}
 
@@ -43,13 +62,21 @@ export default function Index() {
 
           {/* Summary metrics strip */}
           {bonds.length > 0 && (
-            <div className="flex items-center gap-6 px-4 py-2 rounded-md border border-border bg-card">
+            <div
+              className="flex items-center gap-6 px-4 py-2 rounded-md border border-border bg-card"
+              aria-live="polite"
+              aria-label="Summary metrics"
+            >
               <Metric label="Bonds" value={bonds.length.toString()} />
               <Metric label="Curves" value="3" />
               {selectedBond && (
                 <>
-                  <span className="text-border">|</span>
-                  <Metric label="Selected" value={`${selectedBond.ticker} ${selectedBond.maturity.slice(0, 4)}`} highlight />
+                  <span className="text-border" aria-hidden="true">|</span>
+                  <Metric
+                    label="Selected"
+                    value={`${selectedBond.ticker} ${selectedBond.maturity.slice(0, 4)}`}
+                    highlight
+                  />
                 </>
               )}
             </div>
@@ -71,21 +98,19 @@ export default function Index() {
           </div>
 
           {/* Bond table — full width */}
-          <DashCard title="Bond Universe" subtitle="Click a row to select">
+          <DashCard title="Bond Universe" subtitle="Click a row or press Enter to select. Arrow keys to navigate.">
             <BondTable />
           </DashCard>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="h-[32px] flex items-center justify-center border-t border-border text-caption text-muted-foreground">
+      <footer className="h-[32px] flex items-center justify-center border-t border-border text-caption text-muted-foreground" role="contentinfo">
         Fixed Income Dashboard · Local Use Only
       </footer>
     </div>
   );
 }
 
-/** Reusable card wrapper per design system: 4px radius, 1px border, 16px padding */
 function DashCard({
   title,
   subtitle,
@@ -96,7 +121,7 @@ function DashCard({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-md border border-border bg-card p-4">
+    <section className="rounded-md border border-border bg-card p-4" aria-label={title}>
       <div className="mb-3">
         <h3 className="text-h3 text-card-foreground">{title}</h3>
         {subtitle && <p className="text-caption text-muted-foreground">{subtitle}</p>}
@@ -106,7 +131,6 @@ function DashCard({
   );
 }
 
-/** Small metric chip */
 function Metric({
   label,
   value,
@@ -119,9 +143,12 @@ function Metric({
   return (
     <div className="flex items-baseline gap-1.5">
       <span className="text-caption text-muted-foreground">{label}</span>
+      {/* Accent yellow never used as text color — use primary with bold + accent border instead */}
       <span
-        className={`text-body font-semibold tabular-nums ${
-          highlight ? "text-accent" : "text-card-foreground"
+        className={`text-body tabular-nums ${
+          highlight
+            ? "font-bold text-card-foreground border-b-2 border-accent"
+            : "font-semibold text-card-foreground"
         }`}
       >
         {value}
