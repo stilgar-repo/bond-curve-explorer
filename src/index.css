@@ -23,9 +23,9 @@
     --secondary-foreground: 209 100% 13%;
 
     --muted: 0 0% 85%;                /* #d9d9d9 */
-    --muted-foreground: 210 15% 41%;  /* #5a6a7a */
+    --muted-foreground: 215 14% 34%;  /* #4a5568 — WCAG AA 4.5:1 on cream */
 
-    --accent: 66 100% 50%;            /* #e6ff00 */
+    --accent: 66 100% 50%;            /* #e6ff00 — decorative only, never for text */
     --accent-foreground: 209 100% 13%;
 
     --destructive: 356 72% 51%;       /* #d82c38 */
@@ -44,13 +44,13 @@
     --radius: 2px;
 
     /* Extended chart palette */
-    --chart-stormy: 186 24% 80%;      /* #b5d1d4 */
-    --chart-sand: 36 56% 90%;         /* #f4e8d6 */
-    --chart-vibrant: 226 100% 26%;    /* #001f87 */
-    --chart-turquoise: 183 73% 64%;   /* #61e3e8 */
-    --chart-orange: 28 100% 45%;      /* #e86b00 */
-    --chart-green: 104 33% 68%;       /* #a5cc90 */
-    --chart-darkgreen: 112 31% 36%;   /* #497840 */
+    --chart-stormy: 186 24% 80%;
+    --chart-sand: 36 56% 90%;
+    --chart-vibrant: 226 100% 26%;
+    --chart-turquoise: 183 73% 64%;
+    --chart-orange: 28 100% 45%;
+    --chart-green: 104 33% 68%;
+    --chart-darkgreen: 112 31% 36%;
 
     /* Sidebar */
     --sidebar-background: 0 0% 100%;
@@ -61,28 +61,36 @@
     --sidebar-accent-foreground: 209 100% 13%;
     --sidebar-border: 0 0% 85%;
     --sidebar-ring: 209 100% 13%;
+
+    /* Font scaling — default 16px */
+    font-size: 16px;
   }
 
-  .dark {
-    --background: 209 100% 13%;       /* #002140 */
-    --foreground: 189 38% 93%;        /* #e6f1f3 */
+  /* Font scaling classes */
+  .font-compact { font-size: 14px; }
+  .font-default { font-size: 16px; }
+  .font-large   { font-size: 18px; }
 
-    --card: 209 100% 10%;             /* #001a33 */
+  .dark {
+    --background: 209 100% 13%;
+    --foreground: 189 38% 93%;
+
+    --card: 209 100% 10%;
     --card-foreground: 189 38% 93%;
 
     --popover: 209 100% 10%;
     --popover-foreground: 189 38% 93%;
 
-    --primary: 189 38% 93%;           /* #e6f1f3 */
+    --primary: 189 38% 93%;
     --primary-foreground: 209 100% 13%;
 
-    --secondary: 209 55% 23%;         /* #1a3a5c */
+    --secondary: 209 55% 23%;
     --secondary-foreground: 189 38% 93%;
 
     --muted: 209 55% 23%;
-    --muted-foreground: 186 24% 80%;
+    --muted-foreground: 186 24% 75%;  /* lighter for dark bg, still AA compliant */
 
-    --accent: 66 100% 50%;            /* stays #e6ff00 */
+    --accent: 66 100% 50%;
     --accent-foreground: 209 100% 13%;
 
     --destructive: 356 72% 51%;
@@ -94,7 +102,7 @@
     --warning: 28 100% 45%;
     --warning-foreground: 0 0% 100%;
 
-    --border: 209 55% 23%;            /* #1a3a5c */
+    --border: 209 55% 23%;
     --input: 209 55% 23%;
     --ring: 183 73% 64%;
 
@@ -122,45 +130,101 @@
     @apply bg-background text-foreground;
     margin: 0;
     padding: 0;
-    font-size: 15px;
+    font-size: 0.9375rem; /* 15px at default scale */
     line-height: 1.5;
   }
 
-  h1 {
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 1.2;
-  }
+  h1 { font-size: 1.75rem; font-weight: 700; line-height: 1.2; }
+  h2 { font-size: 1.375rem; font-weight: 600; line-height: 1.3; }
+  h3 { font-size: 1.125rem; font-weight: 600; line-height: 1.3; }
 
-  h2 {
-    font-size: 22px;
-    font-weight: 600;
-    line-height: 1.3;
+  /* Focus ring: 2px solid primary with 2px offset, only on :focus-visible */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
   }
-
-  h3 {
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 1.3;
+  :focus:not(:focus-visible) {
+    outline: none;
   }
 }
 
 @layer components {
-  /* Tabular nums for all numeric data */
   .tabular-nums {
     font-variant-numeric: tabular-nums;
     font-family: 'JetBrains Mono', 'Courier New', monospace;
-    font-size: 13px;
+    font-size: 0.8125rem;
     line-height: 1.4;
   }
 
-  /* Caption text */
   .caption {
-    font-size: 12px;
+    font-size: 0.75rem;
     font-weight: 400;
     line-height: 1.4;
     color: hsl(var(--muted-foreground));
   }
+
+  /* Skip navigation link */
+  .skip-nav {
+    position: absolute;
+    top: -100%;
+    left: 1rem;
+    z-index: 100;
+    padding: 0.5rem 1rem;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border-radius: 2px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .skip-nav:focus {
+    top: 0.5rem;
+  }
+
+  /* Dual-encoding value formatting */
+  .value-positive {
+    color: hsl(var(--success));
+    font-weight: 500;
+  }
+  .value-negative {
+    color: hsl(var(--destructive));
+    font-weight: 500;
+  }
+  .value-warning {
+    color: hsl(var(--warning));
+    font-weight: 500;
+  }
+}
+
+/* ─── High Contrast Mode ─── */
+.high-contrast {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 0%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 0%;
+  --border: 0 0% 0%;
+  --muted: 0 0% 80%;
+  --muted-foreground: 0 0% 20%;
+  --secondary: 0 0% 95%;
+  --secondary-foreground: 0 0% 0%;
+}
+.high-contrast.dark {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 5%;
+  --card-foreground: 0 0% 100%;
+  --border: 0 0% 100%;
+  --muted: 0 0% 20%;
+  --muted-foreground: 0 0% 80%;
+  --secondary: 0 0% 15%;
+  --secondary-foreground: 0 0% 100%;
+}
+
+.high-contrast .rounded-md {
+  border-width: 2px;
+}
+.high-contrast section[class*="border"] {
+  border-width: 2px;
 }
 
 /* AG Grid overrides — light */
@@ -187,4 +251,17 @@
   --ag-foreground-color: hsl(189 38% 93%);
   --ag-border-color: hsl(209 55% 23%);
   --ag-selected-row-background-color: hsla(66 100% 50% / 0.08);
+}
+
+/* AG Grid high contrast */
+.high-contrast .ag-theme-alpine {
+  --ag-border-color: hsl(0 0% 0%);
+  --ag-header-background-color: hsl(0 0% 0%);
+  --ag-header-foreground-color: hsl(0 0% 100%);
+  --ag-foreground-color: hsl(0 0% 0%);
+  --ag-background-color: hsl(0 0% 100%);
+}
+.high-contrast.dark .ag-theme-alpine {
+  --ag-foreground-color: hsl(0 0% 100%);
+  --ag-background-color: hsl(0 0% 0%);
 }
