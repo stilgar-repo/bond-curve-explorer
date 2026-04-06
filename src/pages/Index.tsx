@@ -6,23 +6,18 @@ import { HistoricalChart2 } from "@/components/HistoricalChart2";
 import { BondTable } from "@/components/BondTable";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { AppHeader } from "@/components/AppHeader";
+import { WidgetErrorBoundary } from "@/components/WidgetErrorBoundary";
 import { useAppStore } from "@/store/useAppStore";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function Index() {
   const { bonds, selectedBondId, loading, error, fontScale, highContrast } = useAppStore();
 
-  // Apply font scale and high contrast to <html>
   useEffect(() => {
     const root = document.documentElement;
     root.classList.remove("font-compact", "font-default", "font-large");
     root.classList.add(`font-${fontScale}`);
-
-    if (highContrast) {
-      root.classList.add("high-contrast");
-    } else {
-      root.classList.remove("high-contrast");
-    }
+    root.classList.toggle("high-contrast", highContrast);
   }, [fontScale, highContrast]);
 
   const selectedBond = useMemo(() => {
@@ -32,7 +27,6 @@ export default function Index() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      {/* Skip navigation link — first focusable element */}
       <a href="#main-content" className="skip-nav">
         Skip to main content
       </a>
@@ -41,7 +35,6 @@ export default function Index() {
 
       <main id="main-content" className="flex-1 overflow-auto p-4" role="main">
         <div className="max-w-[1400px] mx-auto space-y-4">
-          {/* Error banner */}
           {error && (
             <Alert variant="destructive" role="alert">
               <AlertTriangle className="h-4 w-4" aria-hidden="true" />
@@ -49,7 +42,6 @@ export default function Index() {
             </Alert>
           )}
 
-          {/* Loading spinner */}
           {loading && (
             <div className="flex items-center justify-center py-6" role="status" aria-label="Loading data">
               <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" aria-hidden="true" />
@@ -57,10 +49,8 @@ export default function Index() {
             </div>
           )}
 
-          {/* Inline configuration panel */}
           <SettingsPanel />
 
-          {/* Summary metrics strip */}
           {bonds.length > 0 && (
             <div
               className="flex items-center gap-6 px-4 py-2 rounded-md border border-border bg-card"
@@ -82,29 +72,34 @@ export default function Index() {
             </div>
           )}
 
-          {/* Cross-section scatter — full width */}
-          <DashCard title="Cross-Section Analysis" subtitle="Spread vs maturity for latest date">
-            <CrossSectionPlot />
-          </DashCard>
+          <WidgetErrorBoundary title="Cross-Section Analysis">
+            <DashCard title="Cross-Section Analysis" subtitle="Spread vs maturity for latest date">
+              <CrossSectionPlot />
+            </DashCard>
+          </WidgetErrorBoundary>
 
-          {/* Historical charts — side by side */}
           <div className="grid grid-cols-2 gap-4">
-            <DashCard title="Interpolated Spreads" subtitle="Time series of fitted curve values">
-              <HistoricalChart1 />
-            </DashCard>
-            <DashCard title="Spread Difference" subtitle="Curve 1 − Curve 2 over time">
-              <HistoricalChart2 />
-            </DashCard>
+            <WidgetErrorBoundary title="Interpolated Spreads">
+              <DashCard title="Interpolated Spreads" subtitle="Time series of fitted curve values">
+                <HistoricalChart1 />
+              </DashCard>
+            </WidgetErrorBoundary>
+            <WidgetErrorBoundary title="Spread Difference">
+              <DashCard title="Spread Difference" subtitle="Curve 1 − Curve 2 over time">
+                <HistoricalChart2 />
+              </DashCard>
+            </WidgetErrorBoundary>
           </div>
 
-          {/* Bond table — full width */}
-          <DashCard title="Bond Universe" subtitle="Click a row or press Enter to select. Arrow keys to navigate.">
-            <BondTable />
-          </DashCard>
+          <WidgetErrorBoundary title="Bond Universe">
+            <DashCard title="Bond Universe" subtitle="Click a row or press Enter to select. Arrow keys to navigate.">
+              <BondTable />
+            </DashCard>
+          </WidgetErrorBoundary>
         </div>
       </main>
 
-      <footer className="h-[32px] flex items-center justify-center border-t border-border text-caption text-muted-foreground" role="contentinfo">
+      <footer className="h-8 flex items-center justify-center border-t border-border text-caption text-muted-foreground" role="contentinfo">
         Fixed Income Dashboard · Local Use Only
       </footer>
     </div>
@@ -143,7 +138,6 @@ function Metric({
   return (
     <div className="flex items-baseline gap-1.5">
       <span className="text-caption text-muted-foreground">{label}</span>
-      {/* Accent yellow never used as text color — use primary with bold + accent border instead */}
       <span
         className={`text-body tabular-nums ${
           highlight
