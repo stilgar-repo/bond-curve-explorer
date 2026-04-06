@@ -265,3 +265,10 @@
   --ag-foreground-color: hsl(0 0% 100%);
   --ag-background-color: hsl(0 0% 0%);
 }
+
+/* AG Grid selected row — Tailwind-compatible, no inline styles */
+.ag-theme-alpine .bond-row-selected {
+  border-left: 3px solid hsl(66 100% 50%);
+  background: hsla(66 100% 50% / 0.06);
+  font-weight: 600;
+}
