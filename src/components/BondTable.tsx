@@ -115,16 +115,12 @@ export function BondTable() {
     [setSelectedBondId]
   );
 
-  const getRowStyle = useCallback(
+  const getRowClass = useCallback(
     (params: { data?: TableRow }) => {
       if (params.data?.id === selectedBondId) {
-        return {
-          borderLeft: "3px solid hsl(66 100% 50%)",
-          background: "hsla(66 100% 50% / 0.06)",
-          fontWeight: "600",
-        };
+        return "bond-row-selected";
       }
-      return undefined;
+      return "";
     },
     [selectedBondId]
   );
