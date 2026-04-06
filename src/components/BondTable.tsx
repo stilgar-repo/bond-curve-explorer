@@ -161,7 +161,7 @@ export function BondTable() {
         rowData={rowData}
         columnDefs={columnDefs}
         onRowClicked={onRowClicked}
-        getRowStyle={getRowStyle}
+        getRowClass={getRowClass}
         rowSelection="single"
         animateRows
         defaultColDef={{
